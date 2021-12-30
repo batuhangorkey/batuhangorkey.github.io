@@ -1,4 +1,23 @@
 // jshint esversion: 6
+class Pixel {
+    constructor(i) {
+        this.i = i;
+        this.state = 0;
+        this.prev_state = 0;
+        this.x = getCoordinateX(this.i);
+        this.y = getCoordinateY(this.i);
+        this.rightWrap = (i + 1) % boardX ? 1 : -boardX + 1;
+        this.leftWrap = (i % boardX) ? -1 : boardX - 1;
+        this.up = (i > boardX) ? i - boardX : i + (L - boardX);
+        this.right = i + this.rightWrap;
+        this.down = (i + boardX) < L ? i + boardX : i % boardX;
+        this.left = i + this.leftWrap;
+        this.upRight = this.up + this.rightWrap;
+        this.upLeft = this.up + this.leftWrap;
+        this.downRight = this.down + this.rightWrap;
+        this.downLeft = this.down + this.leftWrap;
+    }
+}
 var canvas = document.getElementById("conway");
 var lastX = 0;
 var lastY = 0;
@@ -8,36 +27,75 @@ canvas.addEventListener('mousemove', function (event) {
     lastY = event.offsetY || (event.pageY - canvas.offsetTop);
 });
 var ctx = canvas.getContext("2d");
-var width = window.innerWidth;
-var height = window.innerHeight;
+const width = window.innerWidth;
+const height = window.innerHeight;
 canvas.width = width;
 canvas.height = height;
-var cellSize = 2;
-var boardX = parseInt(width / cellSize);
-var boardY = parseInt(height / cellSize);
-var board = initialize_board();
-var prevBoard;
+const cellSize = 2;
+const boardX = parseInt(width / cellSize);
+const boardY = parseInt(height / cellSize);
+const L = boardX * boardY;
+var board = [];
+var prevBoard = [];
 var factor = 1.0;
-var scaleFactor = 1.1;
+const scaleFactor = 1.1;
 var zoomCounter = 0;
-ctx.fillStyle = "#000000";
-ctx.fillRect(0, 0, width, height);
-var matrix = [
+const matrix = [
     1, 1, 1,
     1, 9, 1,
     1, 1, 1
 ];
-var liveCells = find_live_cells();
+var liveCells = new Set();
 var prevLiveCells = new Set(liveCells);
 var dead_cells = new Set();
 var revive_cells = new Set(liveCells);
-draw_board();
-update();
+var pixels = [];
+var activeArea = new Set();
+
+start();
+var frame = requestAnimationFrame(update);
+
+function getLocalBoardState() {
+    var local = localStorage.getItem('boardState');
+    if (local == null) {
+        var randomNumbers = [];
+        for (let i = 0; i < L; i++) {
+            randomNumbers.push(getRandomInt(0, 2));
+        }
+        localStorage.setItem('boardState', randomNumbers);
+        return randomNumbers;
+    } else {
+        local = local.split(',');
+        const size = local.length;
+        var arr = [];
+        for (let i = 0; i < size; i++) {
+            arr.push(parseInt(local[i]));
+        }
+        return arr;
+    }
+}
+
+function start() {
+    // randomNumbers = getBoardState();
+    board = initialize_board(board);
+    liveCells = findLiveCells();
+    revive_cells = new Set(liveCells);
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, width, height);
+    createPixelData();
+}
 
 function update() {
-    evaluate_board();
     draw_board();
-    requestAnimationFrame(update);
+    evaluate_board();
+    frame = requestAnimationFrame(update);
+}
+
+function createPixelData() {
+    for (let i = 0; i < L; i++) {
+        const pixel = new Pixel(i);
+        pixels.push(pixel);
+    }
 }
 
 function zoom(event) {
@@ -64,9 +122,9 @@ function restart() {
     board = initialize_board();
 }
 
-function find_live_cells() {
+function findLiveCells() {
     var cells = new Set();
-    for (var i = 0; i < board.length; i++) {
+    for (var i = 0; i < L; i++) {
         if (board[i] == 1) {
             cells.add(i);
         }
@@ -74,42 +132,64 @@ function find_live_cells() {
     return cells;
 }
 
-function initialize_board() {
-    var board = new Array(boardX * boardY);
-    for (var i = 0; i < board.length; i++) {
-        board[i] = getRandomInt(0, 2);
+function initialize_board(board) {
+    for (let i = 0; i < L; i++) {
+        board.push(getRandomInt(0, 2));
     }
     return board;
 }
 
 function evaluate_cell(i) {
+    const e = board[i];
+    const pixel = pixels[i];
+    const liveNeighbors = prevBoard[pixel.up] + prevBoard[pixel.right] + prevBoard[pixel.down] + prevBoard[pixel.left] +
+        prevBoard[pixel.upRight] + prevBoard[pixel.upLeft] + prevBoard[pixel.downRight] + prevBoard[pixel.downLeft];
+    if (liveNeighbors > 3 && e == 1) {
+        return 0;
+    } else if (liveNeighbors < 2 && e == 1) {
+        return 0;
+    } else if (liveNeighbors == 3 && e == 0) {
+        return 1;
+    } else if (e == 0) {
+        return 0;
+    }
+    return 1;
+}
 
+function copy_board() {
+    prevBoard = board.slice();
+}
+
+function diff_board() {
+    for (let item of dead_cells) {
+        board[item] = 0;
+    }
+    for (let item of revive_cells) {
+        board[item] = 1;
+    }
 }
 
 function evaluate_board() {
-    prevBoard = board.slice();
-    const L = board.length;
-    for (var i = 0; i < L; i++) {
-        const e = board[i];
-        const rightWrap = (i + 1) % boardX != 0 ? 1 : 1 - boardX;
-        const leftWrap = (i % boardX) != 0 ? -1 : boardX - 1;
-        const up = (i > boardX) ? i - boardX : i + (board.length - boardX);
-        const right = i + rightWrap;
-        const down = (i + boardX) < (board.length) ? i + boardX : i % boardX;
-        const left = i + leftWrap;
-        const upRight = up + rightWrap;
-        const upLeft = up + leftWrap;
-        const downRight = down + rightWrap;
-        const downLeft = down + leftWrap;
-        const liveNeighbors = prevBoard[up] + prevBoard[right] + prevBoard[down] + prevBoard[left] +
-            prevBoard[upRight] + prevBoard[upLeft] + prevBoard[downRight] + prevBoard[downLeft];
-        if (liveNeighbors > 3 && e == 1) {
+    copy_board();
+    // activeArea.clear();
+    // for (let i of liveCells) {
+    //     activeArea.add(i);
+    //     activeArea.add(pixels[i].up);
+    //     activeArea.add(pixels[i].left);
+    //     activeArea.add(pixels[i].down);
+    //     activeArea.add(pixels[i].right);
+    //     activeArea.add(pixels[i].upRight);
+    //     activeArea.add(pixels[i].upLeft);
+    //     activeArea.add(pixels[i].downRight);
+    //     activeArea.add(pixels[i].downLeft);
+    // }
+    for (let i = 0; i < L; i++) {
+        const n = evaluate_cell(i);
+        const o = prevBoard[i];
+        if (o == 1 && n == 0) {
             board[i] = 0;
             dead_cells.add(i);
-        } else if (liveNeighbors < 2 && e == 1) {
-            board[i] = 0;
-            dead_cells.add(i);
-        } else if (liveNeighbors == 3 && e == 0) {
+        } else if (o == 0 && n == 1) {
             board[i] = 1;
             revive_cells.add(i);
         }
@@ -134,18 +214,16 @@ function getCoordinateY(index) {
 
 function draw_board() {
     const a = 1;
-    var item;
     ctx.fillStyle = `rgba(0, 0, 0, ${a})`;
-    for (item of dead_cells) {
-        const x = getCoordinateX(item);
-        const y = getCoordinateY(item);
+    for (let i of dead_cells) {
+        const x = getCoordinateX(i);
+        const y = getCoordinateY(i);
         ctx.fillRect(x, y, cellSize, cellSize);
     }
     ctx.fillStyle = `rgba(255, 255, 255, ${a})`;
-    for (item of revive_cells) {
-        const e = item;
-        const x = e % boardX * cellSize;
-        const y = Math.floor(e / boardX) * cellSize;
+    for (let i of revive_cells) {
+        const x = getCoordinateX(i);
+        const y = getCoordinateY(i);
         ctx.fillRect(x, y, cellSize, cellSize);
     }
     dead_cells.clear();
