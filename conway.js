@@ -51,32 +51,12 @@ var dead_cells = new Set();
 var revive_cells = new Set(liveCells);
 var pixels = [];
 var activeArea = new Set();
+var redraw = false;
 
 start();
 var frame = requestAnimationFrame(update);
 
-function getLocalBoardState() {
-    var local = localStorage.getItem('boardState');
-    if (local == null) {
-        var randomNumbers = [];
-        for (let i = 0; i < L; i++) {
-            randomNumbers.push(getRandomInt(0, 2));
-        }
-        localStorage.setItem('boardState', randomNumbers);
-        return randomNumbers;
-    } else {
-        local = local.split(',');
-        const size = local.length;
-        var arr = [];
-        for (let i = 0; i < size; i++) {
-            arr.push(parseInt(local[i]));
-        }
-        return arr;
-    }
-}
-
 function start() {
-    // randomNumbers = getBoardState();
     board = initialize_board(board);
     liveCells = findLiveCells();
     revive_cells = new Set(liveCells);
@@ -104,11 +84,7 @@ function zoom(event) {
     factor = Math.pow(scaleFactor, event.deltaY * 0.003);
     ctx.scale(factor, factor);
     ctx.translate(-lastX, -lastY);
-    // ctx.save();
-    // ctx.setTransform(1, 0, 0, 1, 0, 0);
-    // ctx.fillStyle = "rgba(0, 0, 0, 1)";
-    // ctx.fillRect(0, 0, width, height);
-    // ctx.restore();
+    redraw = true;
 }
 
 function activationConway(x) {
@@ -142,18 +118,16 @@ function initialize_board(board) {
 function evaluate_cell(i) {
     const e = board[i];
     const pixel = pixels[i];
-    const liveNeighbors = prevBoard[pixel.up] + prevBoard[pixel.right] + prevBoard[pixel.down] + prevBoard[pixel.left] +
-        prevBoard[pixel.upRight] + prevBoard[pixel.upLeft] + prevBoard[pixel.downRight] + prevBoard[pixel.downLeft];
-    if (liveNeighbors > 3 && e == 1) {
-        return 0;
-    } else if (liveNeighbors < 2 && e == 1) {
-        return 0;
-    } else if (liveNeighbors == 3 && e == 0) {
-        return 1;
-    } else if (e == 0) {
-        return 0;
-    }
-    return 1;
+    var liveNeighbors = prevBoard[pixel.up];
+    liveNeighbors += prevBoard[pixel.right];
+    liveNeighbors += prevBoard[pixel.down];
+    liveNeighbors += prevBoard[pixel.left];
+    liveNeighbors += prevBoard[pixel.upRight];
+    liveNeighbors += prevBoard[pixel.upLeft];
+    liveNeighbors += prevBoard[pixel.downRight];
+    liveNeighbors += prevBoard[pixel.downLeft];
+    liveNeighbors += prevBoard[i] * 9;
+    return activationConway(liveNeighbors);
 }
 
 function copy_board() {
@@ -171,18 +145,6 @@ function diff_board() {
 
 function evaluate_board() {
     copy_board();
-    // activeArea.clear();
-    // for (let i of liveCells) {
-    //     activeArea.add(i);
-    //     activeArea.add(pixels[i].up);
-    //     activeArea.add(pixels[i].left);
-    //     activeArea.add(pixels[i].down);
-    //     activeArea.add(pixels[i].right);
-    //     activeArea.add(pixels[i].upRight);
-    //     activeArea.add(pixels[i].upLeft);
-    //     activeArea.add(pixels[i].downRight);
-    //     activeArea.add(pixels[i].downLeft);
-    // }
     for (let i = 0; i < L; i++) {
         const n = evaluate_cell(i);
         const o = prevBoard[i];
@@ -194,6 +156,32 @@ function evaluate_board() {
             revive_cells.add(i);
         }
     }
+}
+
+function draw_board() {
+    const a = 1;
+    if (redraw) {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+        redraw = false;
+    }
+    ctx.fillStyle = `rgba(0, 0, 0, ${a})`;
+    for (let i of dead_cells) {
+        const x = getCoordinateX(i);
+        const y = getCoordinateY(i);
+        ctx.fillRect(x, y, cellSize, cellSize);
+    }
+    ctx.fillStyle = `rgba(255, 255, 255, ${a})`;
+    for (let i of revive_cells) {
+        const x = getCoordinateX(i);
+        const y = getCoordinateY(i);
+        ctx.fillRect(x, y, cellSize, cellSize);
+    }
+    dead_cells.clear();
+    revive_cells.clear();
 }
 
 function difference(setA, setB) {
@@ -212,24 +200,26 @@ function getCoordinateY(index) {
     return Math.floor(index / boardX) * cellSize;
 }
 
-function draw_board() {
-    const a = 1;
-    ctx.fillStyle = `rgba(0, 0, 0, ${a})`;
-    for (let i of dead_cells) {
-        const x = getCoordinateX(i);
-        const y = getCoordinateY(i);
-        ctx.fillRect(x, y, cellSize, cellSize);
-    }
-    ctx.fillStyle = `rgba(255, 255, 255, ${a})`;
-    for (let i of revive_cells) {
-        const x = getCoordinateX(i);
-        const y = getCoordinateY(i);
-        ctx.fillRect(x, y, cellSize, cellSize);
-    }
-    dead_cells.clear();
-    revive_cells.clear();
-}
-
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function getLocalBoardState() {
+    var local = localStorage.getItem('boardState');
+    if (local == null) {
+        var randomNumbers = [];
+        for (let i = 0; i < L; i++) {
+            randomNumbers.push(getRandomInt(0, 2));
+        }
+        localStorage.setItem('boardState', randomNumbers);
+        return randomNumbers;
+    } else {
+        local = local.split(',');
+        const size = local.length;
+        var arr = [];
+        for (let i = 0; i < size; i++) {
+            arr.push(parseInt(local[i]));
+        }
+        return arr;
+    }
 }
