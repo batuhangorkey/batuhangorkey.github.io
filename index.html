@@ -15,9 +15,19 @@
         height: 100%;
         background: #111;
     }
+
+    #hotbar {
+        position: fixed;
+        z-index: 1;
+        left: 10px;
+        top: 10px;
+    }
 </style>
 
 <body>
+    <div id="hotbar">
+        <button id="reset-btn-hot">Reset</button>
+    </div>
     <canvas id="conway"></canvas>
 </body>
 <script type="text/javascript" src="conway.js"></script>
