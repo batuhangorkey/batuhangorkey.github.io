@@ -19,11 +19,26 @@ class Pixel {
     }
 }
 var canvas = document.getElementById("conway");
-var btn = document.getElementById("reset-btn-hot");
-btn.addEventListener('click', function (event) {
-    console.log("Debug");
+var resetbtn = document.getElementById("reset-btn-hot");
+resetbtn.addEventListener('click', function (event) {
     color = [Math.random() * 255 << 0, Math.random() * 255 << 0, Math.random() * 255 << 0];
-    restart();
+    resetBoard();
+});
+var conwaybtn = document.getElementById("conway-btn");
+conwaybtn.addEventListener('click', function (event) {
+    app.matrix = matrices[0];
+    app.activation = activationConway;
+    app.initBoard = initBoardInt;
+    color = [Math.random() * 255 << 0, Math.random() * 255 << 0, Math.random() * 255 << 0];
+    resetBoard();
+});
+var slimebtn = document.getElementById("slime-btn");
+slimebtn.addEventListener('click', function (event) {
+    app.matrix = matrices[2];
+    app.activation = activationInvGaussian;
+    app.initBoard = initBoardFloat;
+    color = [Math.random() * 255 << 0, Math.random() * 255 << 0, Math.random() * 255 << 0];
+    resetBoard();
 });
 var lastX = 0;
 var lastY = 0;
@@ -116,10 +131,10 @@ var skipFrames = true;
 function start() {
     app.activation = activationInvGaussian;
     app.matrix = matrices[2];
-    board = initializeBoard(board);
+    app.initBoard = initBoardFloat;
+    app.draw = drawBoardImage;
+    board = app.initBoard(board);
     prevBoard = board.slice();
-    liveCells = findLiveCells();
-    revive_cells = new Set(liveCells);
     ctx.fillStyle = "rgba(0, 0, 0, 1)";
     ctx.fillRect(0, 0, width, height);
     createPixelData();
@@ -128,10 +143,10 @@ function start() {
 function update() {
     if (skipFrames) {
         if (fpsCounter % 2) {
-            drawBoardImage();
+            app.draw();
         }
     } else {
-        drawBoardImage();
+        app.draw();
     }
     fpsCounter++;
     fpsCounter = fpsCounter % 10;
@@ -144,6 +159,15 @@ function createPixelData() {
         const pixel = new Pixel(i);
         pixels.push(pixel);
     }
+}
+var aCache = activationCache();
+function activationCache() {
+    let a = {};
+    let l = 1000;
+    for (let i = -l; i < l; i++) {
+        a[i] = app.activation(i / 100);
+    }
+    return a;
 }
 
 function activation(x) {
@@ -172,23 +196,20 @@ function activationConway(x) {
     return 0.0;
 }
 
-function restart() {
-    board = initializeBoard(board);
+function resetBoard() {
+    board = app.initBoard(board);
 }
 
-function findLiveCells() {
-    var cells = new Set();
-    for (var i = 0; i < L; i++) {
-        if (board[i] == 1) {
-            cells.add(i);
-        }
-    }
-    return cells;
-}
-
-function initializeBoard(board) {
+function initBoardFloat(board) {
     for (let i = 0; i < L; i++) {
         board[i] = (Math.random() * 10 << 0) / 10;
+    }
+    return board;
+}
+
+function initBoardInt(board) {
+    for (let i = 0; i < L; i++) {
+        board[i] = getRandomInt(0, 2);
     }
     return board;
 }
@@ -211,6 +232,7 @@ function sumOfNeighbors(i) {
 function evaluate_cell(i) {
     let liveNeighbors = sumOfNeighbors(i);
     let a = app.activation(liveNeighbors);
+    // let a = aCache[liveNeighbors * 100 << 0];
     if (isNaN(a)) {
         return 0;
     }
@@ -235,10 +257,17 @@ function evaluateBoard() {
     }
 }
 
+function drawBoard() {
+    for (let i = 0; i < L; i++) {
+        let a = board[i];
+        ctx.fillStyle = 'rgba(' + [color[0], color[1], color[2], a].join() + ')';
+        ctx.fillRect(pixels[i].x, pixels[i].y, 1, 1);
+    }
+}
+
 function drawBoardImage() {
     for (let i = 0; i < imageData.length; i += 4) {
-        let _i = parseInt(i / 4);
-        let a = board[_i] * 255 << 0;
+        let a = board[i / 4] * 255 << 0;
         imageData[i + 0] = color[0];
         imageData[i + 1] = color[1];
         imageData[i + 2] = color[2];
