@@ -22,6 +22,7 @@ var canvas = document.getElementById("conway");
 var btn = document.getElementById("reset-btn-hot");
 btn.addEventListener('click', function (event) {
     console.log("Debug");
+    color = [Math.random() * 255 << 0, Math.random() * 255 << 0, Math.random() * 255 << 0];
     restart();
 });
 var lastX = 0;
