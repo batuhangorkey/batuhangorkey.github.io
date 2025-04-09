@@ -1,4 +1,8 @@
 // jshint esversion: 6
+import * as tf from '@tensorflow/tfjs';
+
+console.log("Tensorflow.js version: " + tf.version.tfjs);
+
 class Pixel {
     constructor(i) {
         this.i = i;
