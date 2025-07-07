@@ -109,6 +109,10 @@
         </div>
     </nav>
 
+    <!-- Conway's Game of Life Background - Fixed for entire page -->
+    <canvas id="conway-canvas"
+        class="fixed inset-0 w-full h-full opacity-15 pointer-events-none z-0"></canvas>
+
     <!-- Hero Section -->
     <section id="home"
         class="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -135,8 +139,7 @@
                 </p>
                 <p
                     class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-                    Electrical Engineering graduate with expertise in UAV systems,
-                    computer vision, and distributed systems.
+                    Electrical Engineering graduate with expertise in UAV systems.
                     Passionate about combining hardware and software to create
                     intelligent solutions for real-world problems.
                 </p>
@@ -161,7 +164,7 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 bg-dark-card/50">
+    <section id="about" class="py-20 bg-dark-card/30 backdrop-blur-md">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-cyber-blue mb-4">About Me</h2>
@@ -186,7 +189,10 @@
                         that drive mission-critical performance.
                     </p>
                     <p class="text-lg text-gray-300 leading-relaxed">
-                        My team related work can be found at:
+                        Our team's work has been recognized in prestigious
+                        competitions
+                        like Teknofest and SUAS, and we are continuing to join
+                        international competitions.
                         <a href="https://zaferuavteam.com.tr"
                             class="text-cyber-blue hover:underline">
                             zaferuavteam.com.tr
@@ -242,7 +248,7 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="py-20 bg-dark-card/50">
+    <section id="projects" class="py-20 bg-dark-card/30 backdrop-blur-md">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-cyber-blue mb-4">Featured Projects
@@ -269,9 +275,6 @@
                                 class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs">Rust</span>
                             <span
                                 class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-xs">YOLO</span>
-                            <span
-                                class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-xs">3D
-                                Visualization</span>
                             <span
                                 class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs">PI
                                 Controllers</span>
@@ -301,6 +304,8 @@
                             using Raspberry Pi with thermal camera integration for
                             spoofing prevention and distributed architecture.</p>
                         <div class="flex flex-wrap gap-2 mb-4">
+                            <span
+                                class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-xs">Python</span>
                             <span
                                 class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs">Raspberry
                                 Pi</span>
@@ -368,7 +373,7 @@
                             class="fas fa-code text-6xl text-purple-400 group-hover:scale-110 transition-transform duration-300"></i>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-white mb-3">Custom XML
+                        <h3 class="text-xl font-semibold text-white mb-3">XML
                             Editor Tool</h3>
                         <p class="text-gray-400 mb-4">Specialized development tool
                             designed for DevOps workflows, streamlining XML
@@ -394,7 +399,7 @@
     </section>
 
     <!-- Experience Section -->
-    <section id="experience" class="py-20">
+    <section id="experience" class="py-20 bg-dark-bg/30 backdrop-blur-md">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-cyber-blue mb-4">Experience</h2>
@@ -453,59 +458,16 @@
                             C++</span>
                     </div>
                 </div>
+
+                <!-- Experience Item - YEDITEPE UAV Team -->
                 <div
                     class="bg-dark-card p-8 rounded-xl border border-gray-800 hover:border-cyber-blue/50 transition-all duration-300">
                     <div
                         class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                         <div>
-                            <h3 class="text-2xl font-semibold text-white">Graduate
-                                Engineer Intern</h3>
-                            <p class="text-cyber-blue text-lg">ATP Zenia</p>
-                        </div>
-                        <div class="text-gray-400 mt-2 md:mt-0">
-                            <i class="fas fa-calendar-alt mr-2"></i>
-                            August 2024 - December 2024
-                        </div>
-                    </div>
-
-                    <ul class="list-disc pl-6 text-gray-300 leading-relaxed mb-4">
-                        <li class="text-gray-300 leading-relaxed mb-4">
-                            Developed a custom XML Editor Tool for the DevOps team,
-                            enhancing internal workflows.
-                        </li>
-                        <li class="text-gray-300 leading-relaxed mb-4">
-                            Gained hands-on experience with load balancing and
-                            monitoring systems for a nationwide fast-food chain.
-                        </li>
-                        <li class="text-gray-300 leading-relaxed mb-4">
-                            Collaborated with team members to optimize system
-                            performance and ensure high availability in distributed
-                            environments.
-                        </li>
-                    </ul>
-
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="bg-cyber-blue/20 text-cyber-blue px-3 py-1 rounded-full text-sm">DevOps</span>
-                        <span
-                            class="bg-cyber-purple/20 text-cyber-purple px-3 py-1 rounded-full text-sm">Load
-                            Balancing</span>
-                        <span
-                            class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm">Infrastructure</span>
-                        <span
-                            class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm">XML
-                            Development</span>
-                    </div>
-                </div>
-
-                <!-- Experience Item 2 - YEDITEPE UAV Team -->
-                <div
-                    class="bg-dark-card p-8 rounded-xl border border-gray-800 hover:border-cyber-blue/50 transition-all duration-300">
-                    <div
-                        class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                        <div>
-                            <h3 class="text-2xl font-semibold text-white">Software
-                                Engineer</h3>
+                            <h3 class="text-2xl font-semibold text-white">
+                                Software Engineer
+                            </h3>
                             <p class="text-cyber-blue text-lg">YEDITEPE Zafer UAV
                                 Team</p>
                         </div>
@@ -553,6 +515,53 @@
                     </div>
                 </div>
 
+                <div
+                    class="bg-dark-card p-8 rounded-xl border border-gray-800 hover:border-cyber-blue/50 transition-all duration-300">
+                    <div
+                        class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white">Graduate
+                                Intern</h3>
+                            <p class="text-cyber-blue text-lg">ATP Zenia</p>
+                        </div>
+                        <div class="text-gray-400 mt-2 md:mt-0">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            August 2024 - December 2024
+                        </div>
+                    </div>
+
+                    <ul class="list-disc pl-6 text-gray-300 leading-relaxed mb-4">
+                        <li class="text-gray-300 leading-relaxed mb-4">
+                            Developed a custom XML Editor Tool for the DevOps team,
+                            enhancing internal workflows.
+                        </li>
+                        <li class="text-gray-300 leading-relaxed mb-4">
+                            Gained hands-on experience with load balancing and
+                            monitoring systems for a nationwide fast-food chain.
+                        </li>
+                        <li class="text-gray-300 leading-relaxed mb-4">
+                            Collaborated with team members to optimize system
+                            performance and ensure high availability in distributed
+                            environments.
+                        </li>
+                    </ul>
+
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="bg-cyber-blue/20 text-cyber-blue px-3 py-1 rounded-full text-sm">DevOps</span>
+                        <span
+                            class="bg-cyber-purple/20 text-cyber-purple px-3 py-1 rounded-full text-sm">Load
+                            Balancing</span>
+                        <span
+                            class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm">Infrastructure</span>
+                        <span
+                            class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm">XML
+                            Development</span>
+                    </div>
+                </div>
+
+
+
                 <!-- Experience Item 3 - Zena Enerji -->
                 <div
                     class="bg-dark-card p-8 rounded-xl border border-gray-800 hover:border-cyber-blue/50 transition-all duration-300">
@@ -596,7 +605,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-dark-card/50">
+    <section id="contact" class="py-20 bg-dark-card/30 backdrop-blur-md">
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-cyber-blue mb-4">Get In Touch</h2>
@@ -781,9 +790,114 @@
         // Form submission
         document.querySelector('form').addEventListener('submit', function (e) {
             e.preventDefault();
-            // Add form submission logic here
-            alert('Thank you for your message! I\'ll get back to you soon.');
+            // TODO: Add form submission logic here
         });
+
+        // Conway's Game of Life Implementation
+        class ConwayGame {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.cellSize = 8;
+                this.cols = 0;
+                this.rows = 0;
+                this.grid = [];
+                this.nextGrid = [];
+
+                this.resizeCanvas();
+                this.initializeGrid();
+                this.animate();
+
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.cols = Math.floor(this.canvas.width / this.cellSize);
+                this.rows = Math.floor(this.canvas.height / this.cellSize);
+                this.initializeGrid();
+            }
+
+            initializeGrid() {
+                this.grid = [];
+                this.nextGrid = [];
+
+                for (let x = 0; x < this.cols; x++) {
+                    this.grid[x] = [];
+                    this.nextGrid[x] = [];
+                    for (let y = 0; y < this.rows; y++) {
+                        this.grid[x][y] = Math.random() > 0.85 ? 1 : 0;
+                        this.nextGrid[x][y] = 0;
+                    }
+                }
+            }
+
+            getNeighbors(x, y) {
+                let count = 0;
+                for (let dx = -1; dx <= 1; dx++) {
+                    for (let dy = -1; dy <= 1; dy++) {
+                        if (dx === 0 && dy === 0) continue;
+
+                        const nx = (x + dx + this.cols) % this.cols;
+                        const ny = (y + dy + this.rows) % this.rows;
+                        count += this.grid[nx][ny];
+                    }
+                }
+                return count;
+            }
+
+            update() {
+                for (let x = 0; x < this.cols; x++) {
+                    for (let y = 0; y < this.rows; y++) {
+                        const neighbors = this.getNeighbors(x, y);
+                        const current = this.grid[x][y];
+
+                        if (current === 1) {
+                            this.nextGrid[x][y] = (neighbors === 2 || neighbors === 3) ? 1 : 0;
+                        } else {
+                            this.nextGrid[x][y] = (neighbors === 3) ? 1 : 0;
+                        }
+                    }
+                }
+
+                [this.grid, this.nextGrid] = [this.nextGrid, this.grid];
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                for (let x = 0; x < this.cols; x++) {
+                    for (let y = 0; y < this.rows; y++) {
+                        if (this.grid[x][y] === 1) {
+                            const alpha = 0.6 + Math.random() * 0.4;
+                            this.ctx.fillStyle = `rgba(0, 245, 255, ${alpha})`;
+                            this.ctx.fillRect(
+                                x * this.cellSize,
+                                y * this.cellSize,
+                                this.cellSize - 1,
+                                this.cellSize - 1
+                            );
+                        }
+                    }
+                }
+            }
+
+            animate() {
+                this.draw();
+                this.update();
+
+                setTimeout(() => {
+                    requestAnimationFrame(() => this.animate());
+                }, 33);
+            }
+        }
+
+        // Initialize Conway's Game of Life
+        const conwayCanvas = document.getElementById('conway-canvas');
+        if (conwayCanvas) {
+            new ConwayGame(conwayCanvas);
+        }
 
         // Intersection Observer for animations
         const observerOptions = {
